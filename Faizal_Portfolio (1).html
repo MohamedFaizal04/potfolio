@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohamed Faizal - Network Engineer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--primary:#00d4ff;--secondary:#7b2ff7;--accent:#ff6b35;--darker:#050510;--card:rgba(255,255,255,0.04);--text:#e8eaf6;--muted:#8892a4}
+  html{scroll-behavior:smooth}
+  body{font-family:'Rajdhani',sans-serif;background:var(--darker);color:var(--text);overflow-x:hidden;min-height:100vh}
+  #bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(5,5,16,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,212,255,0.12)}
+  .nav-logo{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--primary);letter-spacing:2px}
+  .nav-links{display:flex;gap:2rem;list-style:none}
+  .nav-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:color 0.3s;position:relative}
+  .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--primary);transform:scaleX(0);transition:transform 0.3s}
+  .nav-links a:hover{color:var(--primary)}
+  .nav-links a:hover::after{transform:scaleX(1)}
+
+  .hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem}
+  .hero-content{max-width:800px}
+  .hero-badge{display:inline-block;padding:0.4rem 1.2rem;border:1px solid rgba(0,212,255,0.4);border-radius:20px;font-size:0.72rem;letter-spacing:3px;color:var(--primary);text-transform:uppercase;margin-bottom:1.5rem;animation:pulse-border 2s ease-in-out infinite}
+  @keyframes pulse-border{0%,100%{border-color:rgba(0,212,255,0.4);box-shadow:0 0 0 rgba(0,212,255,0)}50%{border-color:rgba(0,212,255,0.9);box-shadow:0 0 20px rgba(0,212,255,0.2)}}
+  .hero h1{font-family:'Orbitron',monospace;font-size:clamp(2.2rem,6vw,4.5rem);font-weight:900;line-height:1.1;margin-bottom:1rem}
+  .name-line{background:linear-gradient(135deg,#fff 0%,var(--primary) 60%,var(--secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;animation:shimmer 3s linear infinite;background-size:200% auto}
+  @keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+  .hero-role{font-size:1.15rem;font-weight:600;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-role .highlight{color:var(--accent)}
+  .hero-desc{font-size:1rem;color:var(--muted);line-height:1.8;max-width:580px;margin:0 auto 2.5rem}
+  .hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn-primary{padding:0.8rem 2rem;background:var(--primary);color:#000;border:none;border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:transform 0.2s,box-shadow 0.2s}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,255,0.4)}
+  .btn-outline{padding:0.8rem 2rem;background:transparent;color:var(--primary);border:1px solid rgba(0,212,255,0.5);border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.3s,transform 0.2s}
+  .btn-outline:hover{background:rgba(0,212,255,0.1);transform:translateY(-2px)}
+  .hero-stats{display:flex;gap:3rem;justify-content:center;margin-top:3rem;flex-wrap:wrap}
+  .stat-item{text-align:center}
+  .stat-num{font-family:'Orbitron',monospace;font-size:1.9rem;font-weight:700;color:var(--primary);display:block}
+  .stat-label{font-size:0.72rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+
+  section{position:relative;z-index:1;padding:5rem 2rem}
+  .container{max-width:1100px;margin:0 auto}
+  .section-header{text-align:center;margin-bottom:3rem}
+  .section-tag{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--primary);font-weight:600;margin-bottom:0.5rem;display:block}
+  .section-title{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;color:#fff}
+  .section-line{width:60px;height:2px;background:linear-gradient(90deg,var(--primary),var(--secondary));margin:1rem auto 0;border-radius:2px}
+
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.5rem}
+  .skill-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.8rem;position:relative;overflow:hidden;transition:transform 0.3s,border-color 0.3s}
+  .skill-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);transform:scaleX(0);transition:transform 0.4s}
+  .skill-card:hover{transform:translateY(-4px);border-color:rgba(0,212,255,0.3)}
+  .skill-card:hover::before{transform:scaleX(1)}
+  .skill-icon{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2)}
+  .skill-icon.aws{background:rgba(255,107,53,0.1);border-color:rgba(255,107,53,0.2)}
+  .skill-icon.linux{background:rgba(123,47,247,0.1);border-color:rgba(123,47,247,0.2)}
+  .skill-card h3{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:1rem;letter-spacing:1px}
+  .skill-tags{display:flex;flex-wrap:wrap;gap:0.4rem}
+  .skill-tag{padding:0.25rem 0.7rem;border-radius:20px;font-size:0.72rem;font-weight:600;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--primary)}
+  .skill-tag.aws{background:rgba(255,107,53,0.08);border-color:rgba(255,107,53,0.2);color:var(--accent)}
+  .skill-tag.linux{background:rgba(123,47,247,0.08);border-color:rgba(123,47,247,0.2);color:#a78bfa}
+
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:1.5rem}
+  .project-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.8rem;transition:transform 0.3s,border-color 0.3s;position:relative;overflow:hidden}
+  .project-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 0%,rgba(0,212,255,0.06) 0%,transparent 60%);pointer-events:none}
+  .project-card:hover{transform:translateY(-5px);border-color:rgba(0,212,255,0.35)}
+  .project-label{font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;padding:0.22rem 0.65rem;border-radius:20px;margin-bottom:1rem;display:inline-block}
+  .project-label.ccna{background:rgba(0,212,255,0.1);color:var(--primary)}
+  .project-label.aws{background:rgba(255,107,53,0.1);color:var(--accent)}
+  .project-label.linux{background:rgba(123,47,247,0.1);color:#a78bfa}
+  .project-card h3{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:0.8rem}
+  .project-bullets{list-style:none}
+  .project-bullets li{font-size:0.88rem;color:var(--muted);padding:0.28rem 0;padding-left:1rem;position:relative;line-height:1.5}
+  .project-bullets li::before{content:'›';position:absolute;left:0;color:var(--primary);font-weight:700}
+
+  .edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem}
+  .edu-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.4rem;display:flex;align-items:flex-start;gap:1rem;transition:border-color 0.3s,transform 0.3s}
+  .edu-card:hover{border-color:rgba(0,212,255,0.25);transform:translateY(-3px)}
+  .edu-icon{width:40px;height:40px;border-radius:8px;flex-shrink:0;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+  .edu-degree{font-size:0.92rem;font-weight:700;color:#fff;margin-bottom:0.2rem}
+  .edu-school{font-size:0.8rem;color:var(--primary);font-weight:600;margin-bottom:0.2rem}
+  .edu-year{font-size:0.75rem;color:var(--muted)}
+
+  .cert-grid{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2rem}
+  .cert-badge{background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:1.1rem 1.6rem;text-align:center;transition:all 0.3s;min-width:200px}
+  .cert-badge:hover{border-color:rgba(0,212,255,0.4);transform:scale(1.04);box-shadow:0 0 30px rgba(0,212,255,0.1)}
+  .cert-icon{font-size:1.8rem;margin-bottom:0.4rem}
+  .cert-name{font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.2rem}
+  .cert-org{font-size:0.75rem;color:var(--primary)}
+
+  .tools-row{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2rem}
+  .tool-pill{padding:0.55rem 1.3rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:30px;font-size:0.85rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:0.5rem;transition:all 0.3s}
+  .tool-pill:hover{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.4);color:var(--primary);transform:scale(1.05)}
+  .tool-dot{width:7px;height:7px;border-radius:50%;background:var(--primary)}
+
+  #contact{background:rgba(0,212,255,0.02);border-top:1px solid rgba(0,212,255,0.1)}
+  .contact-line{color:var(--muted);font-size:1rem;margin-bottom:2.5rem;text-align:center}
+  .contact-items{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap}
+  .contact-item{display:flex;align-items:center;gap:0.7rem;padding:0.8rem 1.4rem;background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:0.88rem;color:var(--text);text-decoration:none;transition:all 0.3s}
+  .contact-item:hover{border-color:rgba(0,212,255,0.4);color:var(--primary);transform:translateY(-2px)}
+
+  footer{text-align:center;padding:2rem;font-size:0.78rem;color:var(--muted);border-top:1px solid rgba(255,255,255,0.05);position:relative;z-index:1}
+  .footer-name{color:var(--primary);font-weight:700}
+
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s,transform 0.7s}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .cursor{display:inline-block;width:3px;height:1em;background:var(--primary);animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  @media(max-width:600px){nav{padding:1rem 1.5rem}.nav-links{display:none}.hero-stats{gap:1.5rem}}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <div class="nav-logo">MF.net</div>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🌐 &nbsp; Open to Entry-Level Opportunities</div>
+    <h1><span class="name-line">Mohamed Faizal A</span></h1>
+    <p class="hero-role">Aspiring <span class="highlight" id="typed-role"></span><span class="cursor"></span></p>
+    <p class="hero-desc">Hands-on expertise in CCNA networking, AWS cloud fundamentals, and Linux administration. Ready to contribute to IT infrastructure and network support from day one.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-primary">Get in Touch</a>
+      <a href="#projects" class="btn-outline">View Projects</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">Projects</span></div>
+      <div class="stat-item"><span class="stat-num">3</span><span class="stat-label">Tech Stacks</span></div>
+      <div class="stat-item"><span class="stat-num">2</span><span class="stat-label">Certifications</span></div>
+      <div class="stat-item"><span class="stat-num">B.E.</span><span class="stat-label">CS Engineering</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Technical Arsenal</span>
+      <h2 class="section-title">Core Skills</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-icon">🌐</div>
+        <h3>Networking (CCNA)</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">OSI & TCP/IP</span>
+          <span class="skill-tag">Cisco Router CLI</span>
+          <span class="skill-tag">Cisco Switch CLI</span>
+          <span class="skill-tag">IP Addressing</span>
+          <span class="skill-tag">Subnetting</span>
+          <span class="skill-tag">VLAN & Trunking</span>
+          <span class="skill-tag">DHCP</span>
+          <span class="skill-tag">Static Routing</span>
+          <span class="skill-tag">Ping & Traceroute</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon aws">☁️</div>
+        <h3>Cloud (AWS)</h3>
+        <div class="skill-tags">
+          <span class="skill-tag aws">EC2 Management</span>
+          <span class="skill-tag aws">VPC & Subnets</span>
+          <span class="skill-tag aws">Route Tables</span>
+          <span class="skill-tag aws">Security Groups</span>
+          <span class="skill-tag aws">S3 Buckets</span>
+          <span class="skill-tag aws">IAM & Permissions</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon linux">🐧</div>
+        <h3>Linux</h3>
+        <div class="skill-tags">
+          <span class="skill-tag linux">File System</span>
+          <span class="skill-tag linux">CLI Operations</span>
+          <span class="skill-tag linux">User Management</span>
+          <span class="skill-tag linux">Group Management</span>
+          <span class="skill-tag linux">File Permissions</span>
+          <span class="skill-tag linux">Package Management</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="background:rgba(123,47,247,0.02)">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">What I've Built</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <span class="project-label ccna">CCNA</span>
+        <h3>Inter-VLAN Routing (Router-on-a-Stick)</h3>
+        <ul class="project-bullets">
+          <li>Created VLANs and configured router sub-interfaces</li>
+          <li>Enabled seamless communication between VLANs</li>
+          <li>Verified inter-VLAN connectivity using Packet Tracer</li>
+        </ul>
+      </div>
+      <div class="project-card reveal">
+        <span class="project-label ccna">CCNA</span>
+        <h3>OSPF Multi-Area Routing</h3>
+        <ul class="project-bullets">
+          <li>Configured OSPF across multiple routing areas</li>
+          <li>Verified routing tables and end-to-end connectivity</li>
+          <li>Demonstrated dynamic route propagation</li>
+        </ul>
+      </div>
+      <div class="project-card reveal">
+        <span class="project-label ccna">CCNA</span>
+        <h3>NAT Configuration (Static / Dynamic / PAT)</h3>
+        <ul class="project-bullets">
+          <li>Implemented all three NAT types in a lab environment</li>
+          <li>Enabled private-to-public network communication</li>
+          <li>Validated internet reachability from private hosts</li>
+        </ul>
+      </div>
+      <div class="project-card reveal">
+        <span class="project-label aws">AWS</span>
+        <h3>Static Website Hosting on S3</h3>
+        <ul class="project-bullets">
+          <li>Created & configured S3 bucket for static hosting</li>
+          <li>Set bucket policies and managed public access settings</li>
+          <li>Uploaded HTML files and verified the live endpoint</li>
+        </ul>
+      </div>
+      <div class="project-card reveal">
+        <span class="project-label linux">Linux</span>
+        <h3>User & Permission Management</h3>
+        <ul class="project-bullets">
+          <li>Created Linux users and assigned group memberships</li>
+          <li>Configured granular file and folder permissions</li>
+          <li>Implemented role-based access control (RBAC)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION & CERTS -->
+<section id="education" style="background:rgba(0,212,255,0.02)">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Academic Background</span>
+      <h2 class="section-title">Education & Certifications</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="edu-grid reveal">
+      <div class="edu-card">
+        <div class="edu-icon">🎓</div>
+        <div>
+          <div class="edu-degree">B.E. Computer Science</div>
+          <div class="edu-school">Ponjesly College of Engineering</div>
+          <div class="edu-year">2022 – 2026</div>
+        </div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-icon">📘</div>
+        <div>
+          <div class="edu-degree">Higher Secondary (HSC)</div>
+          <div class="edu-school">SLB Higher Secondary School, Nagercoil</div>
+          <div class="edu-year">2020 – 2022</div>
+        </div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-icon">📗</div>
+        <div>
+          <div class="edu-degree">Secondary School (SSLC)</div>
+          <div class="edu-school">Zion Jeba Thottam HSS, Easanthimangalam</div>
+          <div class="edu-year">2018 – 2020</div>
+        </div>
+      </div>
+    </div>
+    <div class="cert-grid reveal">
+      <div class="cert-badge">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-name">CCNA Course Completion</div>
+        <div class="cert-org">Besant Technologies</div>
+      </div>
+      <div class="cert-badge">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-name">AWS & Linux Completion</div>
+        <div class="cert-org">Besant Technologies</div>
+      </div>
+      <div class="cert-badge">
+        <div class="cert-icon">🎓</div>
+        <div class="cert-name">CCNA, Linux & AWS Training</div>
+        <div class="cert-org">Besant Technologies</div>
+      </div>
+    </div>
+    <div class="tools-row reveal">
+      <div class="tool-pill"><span class="tool-dot"></span>Cisco Packet Tracer</div>
+      <div class="tool-pill"><span class="tool-dot" style="background:#a78bfa"></span>Ubuntu Linux</div>
+      <div class="tool-pill"><span class="tool-dot" style="background:#ff6b35"></span>AWS Management Console</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Let's Connect</span>
+      <h2 class="section-title">Get in Touch</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="reveal">
+      <p class="contact-line">Open to Network Engineer, Network Support Engineer, and AWS/Cloud Associate roles. Let's talk!</p>
+      <div class="contact-items">
+        <a href="tel:8754394955" class="contact-item">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.25h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.05z"/></svg>
+          +91 87543 94955
+        </a>
+        <a href="mailto:your@email.com" class="contact-item">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          your@email.com
+        </a>
+        <a href="https://linkedin.com/in/yourprofile" class="contact-item">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn Profile
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built by <span class="footer-name">Mohamed Faizal A</span> &nbsp;·&nbsp; Network Engineer in the Making 🌐</p>
+</footer>
+
+<script>
+  // ── Animated Particle Network Background ──
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: null, y: null };
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function Particle() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.r = Math.random() * 1.5 + 0.5;
+    this.color = Math.random() > 0.7 ? '#7b2ff7' : '#00d4ff';
+  }
+
+  for (let i = 0; i < 90; i++) particles.push(new Particle());
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = 0.6;
+      ctx.fill();
+    });
+
+    particles.forEach((a, i) => {
+      particles.slice(i + 1).forEach(b => {
+        const dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = '#00d4ff';
+          ctx.globalAlpha = (140 - d) / 140 * 0.15;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      });
+      if (mouse.x) {
+        const dx = a.x - mouse.x, dy = a.y - mouse.y, d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 180) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = '#00d4ff';
+          ctx.globalAlpha = (180 - d) / 180 * 0.3;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+  // ── Typing Effect ──
+  const roles = ['Network Engineer', 'Network Support Engineer', 'CCNA Professional', 'AWS Cloud Practitioner', 'IT Infrastructure Engineer'];
+  let ri = 0, ci = 0, del = false, el = document.getElementById('typed-role');
+
+  function type() {
+    const w = roles[ri];
+    el.textContent = del ? w.slice(0, ci--) : w.slice(0, ci++);
+    if (!del && ci > w.length) { setTimeout(() => { del = true; }, 1800); setTimeout(type, 150); return; }
+    if (del && ci < 0) { del = false; ri = (ri + 1) % roles.length; ci = 0; setTimeout(type, 400); return; }
+    setTimeout(type, del ? 60 : 90);
+  }
+  type();
+
+  // ── Scroll Reveal ──
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(e => obs.observe(e));
+</script>
+</body>
+</html>
